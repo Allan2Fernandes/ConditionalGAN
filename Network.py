@@ -47,12 +47,6 @@ class Network:
         self.loss_function = tf.losses.BinaryCrossentropy(from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
         pass
 
-    def compile_models(self):
-        self.complete_gan = tf.keras.models.Sequential([self.generator, self.discriminator])
-        self.discriminator.compile(loss=self.loss_function, optimizer=self.discriminator_optimizer)
-        self.discriminator.trainable = False
-        self.complete_gan.compile(loss=self.loss_function, optimizer=self.generator_optimizer)
-        pass
 
     def get_total_discrminator_loss(self, real_predictions, fake_predictions):
         # Create a real image label vector
@@ -143,50 +137,3 @@ class Network:
         self.discriminator.save(f"Models/Discriminator{epochs}Epochs")
         pass
 
-    def train_2(self, epochs):
-        generator, discriminator = self.complete_gan.layers
-        for epoch in range(epochs):
-
-            for index, (real_images, one_hot_labels, one_hot_filters) in enumerate(self.dataset):
-                # print("Step number: {}".format(step + 1))
-                # Get the number of images in each batch
-                batch_size = real_images.shape[0]
-                # Phase1 train the discriminator
-
-                # Create noise
-                noise = tf.random.normal(shape=[batch_size, self.encoding_size])
-                # Use the noise to create fake images from the generator
-                fake_images = generator(noise)
-                # Concatenate the fake and real images into a single tensor
-
-                discriminator_batch_input = tf.concat([fake_images, real_images], axis=0)
-                # Make labels for the fake images and real images
-                # For the concatenated tensor, create a label tensor for 0:fake and 1:real
-                labels = tf.concat([[0 for x in range(batch_size)] + [1 for x in range(batch_size)]], axis=0)
-                discriminator_batch_labels = tf.reshape(labels, shape=(batch_size * 2, 1))
-
-                # Ensure the discriminator is training
-                discriminator.set_trainable = True
-                # Train the discriminator on the batch
-                discriminator.train_on_batch(discriminator_batch_input, discriminator_batch_labels)
-
-                # Phase2 train the generator
-
-                # Create noise, just like the first time
-                noise = tf.random.normal(shape=[batch_size, self.encoding_size])
-                # label all generated images to be "real"
-                labels = [1 for x in range(batch_size)]
-                generator_labels = tf.reshape(labels, shape=(batch_size, 1))
-                # Freeze the disciminator
-                discriminator.set_trainable = False
-                # Train the whole gan on the batch
-                self.complete_gan.train_on_batch(noise, generator_labels)
-                if index%10 == 0:
-                    print("Processed step: {}".format(index))
-                pass
-            if epoch%10== 0:
-                # Create some noise and make a prediction based on it
-                noise = tf.random.normal(shape=[1, self.encoding_size])
-                generated_image = generator(noise)
-                plt.imshow(generated_image[0])
-                plt.show()
