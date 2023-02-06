@@ -25,27 +25,6 @@ class Network:
             tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=(5, 5), strides=(2, 2), padding='same', activation='tanh'),
         ])
 
-        # self.generator = tf.keras.Sequential()
-        # self.generator.add(layers.Dense(7 * 7 * 256, use_bias=False, input_shape=[encoding_size+num_classes]))
-        # self.generator.add(layers.BatchNormalization())
-        # self.generator.add(layers.LeakyReLU())
-        #
-        # self.generator.add(layers.Reshape((7, 7, 256)))
-        # assert self.generator.output_shape == (None, 7, 7, 256)  # Note: None is the batch size
-        #
-        # self.generator.add(layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False))
-        # assert self.generator.output_shape == (None, 7, 7, 128)
-        # self.generator.add(layers.BatchNormalization())
-        # self.generator.add(layers.LeakyReLU())
-        #
-        # self.generator.add(layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False))
-        # assert self.generator.output_shape == (None, 14, 14, 64)
-        # self.generator.add(layers.BatchNormalization())
-        # self.generator.add(layers.LeakyReLU())
-        #
-        # self.generator.add(layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False, activation='tanh'))
-        # assert self.generator.output_shape == (None, 28, 28, 1)
-
         self.generator.summary()
         pass
 
@@ -59,18 +38,6 @@ class Network:
             keras.layers.Dense(1, activation="sigmoid")
         ])
 
-
-        # self.discriminator = tf.keras.Sequential()
-        # self.discriminator.add(layers.Conv2D(64, (5, 5), strides=(2, 2), padding='same',input_shape=[28, 28, 1+num_classes]))
-        # self.discriminator.add(layers.LeakyReLU())
-        # self.discriminator.add(layers.Dropout(0.3))
-        #
-        # self.discriminator.add(layers.Conv2D(128, (5, 5), strides=(2, 2), padding='same'))
-        # self.discriminator.add(layers.LeakyReLU())
-        # self.discriminator.add(layers.Dropout(0.3))
-        #
-        # self.discriminator.add(layers.Flatten())
-        # self.discriminator.add(layers.Dense(1))
         self.discriminator.summary()
         pass
 
